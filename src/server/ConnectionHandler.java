@@ -51,9 +51,8 @@ public class ConnectionHandler implements Runnable {
 		this.requestHandlers = new HashMap<String, IRequestHandler>();
 		this.requestHandlers.put(Protocol.GET, new GetRequestHandler());
 		this.requestHandlers.put(Protocol.POST, new PostRequestHandler());
-		// this.requestHandlers.put(Protocol.PUT, new PutRequestHandler());
-		// this.requestHandlers.put(Protocol.DELETE, new
-		// DeleteRequestHandler());
+		this.requestHandlers.put(Protocol.PUT, new PutRequestHandler());
+		this.requestHandlers.put(Protocol.DELETE, new DeleteRequestHandler());
 	}
 
 	/**
@@ -99,7 +98,7 @@ public class ConnectionHandler implements Runnable {
 		HttpResponse response = null;
 		try {
 			request = HttpRequest.read(inStream);
-			System.out.println(request);
+			System.out.println("REQUEST: " + request.toString());
 		} catch (ProtocolException pe) {
 			// We have some sort of protocol exception. Get its status code and
 			// create response
@@ -157,8 +156,7 @@ public class ConnectionHandler implements Runnable {
 			} else if (requestHandlers.containsKey(request.getMethod())) {
 				response = requestHandlers.get(request.getMethod())
 						.handleRequest(request, server.getRootDirectory());
-				System.out.println("!!!!!!!!!!"+response.getHeader().toString()+"!!!!!!!!!!!!!!");
-				//System.out.println(response.toString());
+				System.out.println("TEST:" + response.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
