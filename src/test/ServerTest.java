@@ -63,6 +63,8 @@ public class ServerTest {
 
 	@Test
 	public void testGet() {
+		// String expectedResponse =
+		// "----------- Header ----------------\nHTTP/1.1 200 OK\nServer: SimpleWebServer(SWS)/1.0.0 (Windows 7/6.1/amd64)\nConnection: Close\nLast-Modified: Tue Nov 05 22:00:22 EST 2013\nContent-Length: 107\nDate: Sun Oct 18 21:40:53 EDT 2015\nProvider: Chandan R. Rupakheti\nContent-Type: text/html\n\n\n----------------------------------\n------------- Body ---------------\n<html>\n<head>\n	<title>Test Page</title>\n</head>\n<body>\n	<p>Test Page Successful!</p>\n</body>\n</html>\n----------------------------------\n";
 		String request = "GET /index.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
 
 		HttpResponse actualResponse = makeRequest(request);
@@ -72,6 +74,137 @@ public class ServerTest {
 		assertEquals("HTTP/1.1", actualResponse.getVersion());
 		assertEquals("OK", actualResponse.getPhrase());
 		assertEquals(200, actualResponse.getStatus());
+
+		// String host = "localhost";
+		// int port = 8080;
+		// Socket socket = null;
+		// try {
+		// socket = new Socket(host, port);
+		// } catch (IOException e1) {
+		// fail("socket could not connect");
+		// e1.printStackTrace();
+		// }
+		// try {
+		// if (!socket.isConnected())
+		// throw new Exception("Socket is not connected!");
+		//
+		// OutputStream out = socket.getOutputStream();
+		// out.write(request.getBytes());
+		// out.flush();
+		// } catch (final Exception e) {
+		// fail("Error with socket connection");
+		// }
+		// try {
+		// InputStream in = socket.getInputStream();
+		// // Read the response
+		// HttpResponse actualResponse = HttpResponse.read(in);
+		// System.out.print("!" + expectedResponse + "!" + actualResponse
+		// + "!");
+		// assertEquals(expectedResponse, actualResponse.toString());
+		//
+		// } catch (final Exception e) {
+		// fail("Error with response");
+		// }
+		// fail("no response received");
+	}
+	
+	@Test
+	public void testPutNew() {
+		
+		String put = "PUT /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nContent-Length: 4\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\ntest";
+
+		HttpResponse actualResponse = makeRequest(put);
+		
+		String expectedBody = "test";
+
+		assertEquals(expectedBody, actualResponse.getBody().replace("\n", "").replace("\r", ""));
+		assertEquals("HTTP/1.1", actualResponse.getVersion());
+		assertEquals("OK", actualResponse.getPhrase());
+		assertEquals(200, actualResponse.getStatus());
+		
+		String delete = "DELETE /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+		makeRequest(delete);
+	}
+	
+	@Test
+	public void testPutOverwrite() {
+		String put = "PUT /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nContent-Length: 4\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\ntest";
+
+		HttpResponse actualResponse = makeRequest(put);
+		
+		String expectedBody = "test";
+
+		assertEquals(expectedBody, actualResponse.getBody().replace("\n", "").replace("\r", ""));
+		assertEquals("HTTP/1.1", actualResponse.getVersion());
+		assertEquals("OK", actualResponse.getPhrase());
+		assertEquals(200, actualResponse.getStatus());
+		
+		String delete = "DELETE /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+		makeRequest(delete);
+	}
+	
+	@Test
+	public void testPostNew() {
+		
+		String put = "POST /test2.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nContent-Length: 4\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\ntest";
+
+		HttpResponse actualResponse = makeRequest(put);
+		
+		String expectedBody = "test";
+
+		assertEquals(expectedBody, actualResponse.getBody().replace("\n", "").replace("\r", ""));
+		assertEquals("HTTP/1.1", actualResponse.getVersion());
+		assertEquals("OK", actualResponse.getPhrase());
+		assertEquals(200, actualResponse.getStatus());
+		
+		String delete = "DELETE /test2.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+		makeRequest(delete);
+	}
+	
+	@Test
+	public void testPostAppend() {
+		String put = "POST /test2.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nContent-Length: 4\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\ntest";
+
+		makeRequest(put);
+		
+		String put2 = "POST /test2.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nContent-Length: 4\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\ntest";
+
+		HttpResponse actualResponse = makeRequest(put2);
+		
+		String expectedBody = "test";
+
+		assertEquals(expectedBody, actualResponse.getBody().replace("\n", "").replace("\r", ""));
+		assertEquals("HTTP/1.1", actualResponse.getVersion());
+		assertEquals("OK", actualResponse.getPhrase());
+		assertEquals(200, actualResponse.getStatus());
+		
+		String delete = "DELETE /test2.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+		makeRequest(delete);
+	}
+	
+	@Test
+	public void testDelete() {
+		
+		String put = "PUT /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+		makeRequest(put);
+		String request = "DELETE /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+
+		HttpResponse actualResponse = makeRequest(request);
+
+		assertEquals("HTTP/1.1", actualResponse.getVersion());
+		assertEquals("OK", actualResponse.getPhrase());
+		assertEquals(200, actualResponse.getStatus());
+	}
+	
+	@Test
+	public void testDelete404() {
+		String request = "DELETE /test.html HTTP/1.1\naccept-language: en-US,en;q=0.8\nhost: localhost\nconnection: Keep-Alive\nuser-agent: HttpTestClient/1.0\naccept: text/html,text/plain,application/xml,application/json\n\n";
+
+		HttpResponse actualResponse = makeRequest(request);
+
+		assertEquals("HTTP/1.1", actualResponse.getVersion());
+		assertEquals("Not", actualResponse.getPhrase());
+		assertEquals(404, actualResponse.getStatus());
 	}
 
 	public HttpResponse makeRequest(String request) {
